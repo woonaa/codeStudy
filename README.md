@@ -1,2 +1,2 @@
 # exercise_js
-inflearn &amp; opentutorial 
+inflearn &amp; opentutorial
