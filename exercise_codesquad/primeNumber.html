@@ -30,7 +30,8 @@
       }
       return true;
     };
-
+    // 결국 addPrime가 실행하면서 isPrime가 실행
+    // if(내용)은 조건의 형태가 오는 것이 아니라 참 혹은 거짓의 내용으로만 접근
     numbers.addPrime = function(number) {
       for (var i = 0; i < this.all.length; i++){
         var n = this.all[i];
@@ -52,7 +53,7 @@
     numbers.addAll(10000);
     numbers.addPrime();
     document.getElementById('result').innerHTML = numbers.getAllPrimeNumbers();
-
+    //innerHTML의 내용 숙지
   </script>
 
 
