@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>문자열 계산기 구현하기</h1>
+  <div>
+      첫 번째 수<input type="text" id ="n1">
+      사칙연산 기호<input type="text" id ="op">
+      두 번째 수<input type="text" id ="n2">
+      <button onclick="calc()">계산</button>
+  </div>
+  <div id="output"></div>
+  <script>
+    function calc() {
+      var n1 = Number(document.getElementById('n1').value);
+      var n2 = Number(document.getElementById('n2').value);
+      var op = document.getElementById('op').value
+
+      var out = document.getElementById('output');
+      var str = "";
+      if (op === '+') {
+        str += "합  " + (n1+n2) +"<br>";
+      } else if(op ==='-') {
+        str += "차  " + (n1-n2) +"<br>";
+      } else if(op ==='*') {
+        str += "곱  " + (n1*n2) +"<br>";
+      } else {
+        str += "분  " + (n1/n2) +"<br>";
+      }
+      out.innerHTML = str;
+    }
+  </script>
+
+</body>
+</html>
