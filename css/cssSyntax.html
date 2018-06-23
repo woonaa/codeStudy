@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="style.css"> <!--css파일 불러오기-->
+
+  <title>Document</title>
+
+      <style>
+      /* 선택자와 선언 */
+      /* a {} 선택자(selector), {내용} 선언(declaration) */
+      /* color 은 property, red 는 value */
+        #active {
+          color : blue;
+        }
+
+        .saw {
+          color : grey;
+        }
+
+        a {
+          color : red;
+          text-decoration: none;
+        }
+
+        h1 {
+          border-width: 5px;
+          border-color: red;
+          border-style: solid;
+        }
+
+        h1 {
+          border : 5px red solid;   /*같은 선언은 묶어서 할 수있다.*/
+        }
+
+        /* 우선순위는 ID > Clacc > 태그 */
+        /* ID는 중복되어서는 안되는 유일한 값이어야하기 떄문에 우선순위가 높다 */
+        /* 같은 선택자라면 가장 마지막의 선택자가 적용된다 */
+        /* block level element 는 화면 전체를 쓰는 태그 예로 h1 */
+        /* inline level element 는 그 태그만 예로 a */
+
+        #grid {
+           border:5px solid pink;
+           display:grid;
+           grid-template-columns: 150px 1fr;
+         }
+
+         div{
+           border:5px solid gray;
+         }
+      </style>
+  </head>
+  <body>
+      <a href = "1.html" style = "color:red; text-decoration = underline"> html 속성 </a>
+      <!-- html 태그 안에 style속성을 사용하여 css를 직접 작성할 수 있고, ;으로 구분한다. -->
+
+      <a href = "2.htmla" style = "color:red" class="saw">class사용</a>
+      <!-- class를 작성하여 css 선택자로 만들어 사용할 수 있다. 예를들면 .saw{} -->
+
+      <a href = "2.htmla" style = "color:red" class="saw" id ="active">class사용</a>
+      <!-- 우선순위에 따라서 id의 css가 적용된다. -->
+
+      <div id="grid">
+        <div> navi </div>
+        <div> articl </div>
+      </div>
+
+
+  </body>
+</html>
