@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>문자열 계산기 구현하기</h1>
+  <div id="output"></div>
+  <script>
+
+        var input = {count:2}
+        input.getFirstValue = function(){
+              var n = Number(prompt("첫 번째 값을 입력해주세요"));
+              return n;
+        };
+        input.getSecondValue= function() {
+          var num2 = Number(prompt(this.count +"번째 값을 입력해주세요"));
+          this.count++;
+          return num2;
+        };
+        input.getOperator = function(){
+          var op = prompt("연산자를 입력해주세요");
+          while (true) {
+            if (op === "+"||op === "-"||op === "*"||op === "/"||op === "q") {
+              break
+            } else {
+              alert("올바른 연산자를 입력해주세요");
+            }
+
+          }
+          return op;
+        };
+
+
+        var output = {};
+        output.out = document.getElementById('output');
+
+        output.print = function(value){
+            this.out.innerHTML = "최종 결과 값은" + value +"입니다";
+        };
+
+        var calculator = {};
+        calculator.calculate = function(first, second, op){
+          var ret;
+          switch (op) {
+            case "+":
+            ret = first + second;
+            break;
+            case "-":
+            ret = first - second;
+            break;
+            case "*":
+            ret = first * second;
+            break;
+            case "/":
+            ret = first / second;
+            break;
+          }
+          return ret;
+        };
+
+
+      function main() {
+          var result = input.getFirstValue();
+          while (true) {
+              var op = input.getOperator();
+              if (op ==='q') {
+                  break;
+              }
+              var num = input.getSecondValue();
+              result = calculator.calculate(result, num, op);
+          }
+
+          output.print(result);
+      }
+      main();
+
+
+  </script>
+
+</body>
+</html>
