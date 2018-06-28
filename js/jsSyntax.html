@@ -177,4 +177,130 @@ var readInput = function(){
 <button id="btn1" onclick='readInput()'>확인</button>
 //js
 btn1.onclick = readInput;
+
+// 4주차
+
+// 변수의 scope
+// 변수의 유효범위 - 검색키워드 javascript scope
+
+// 전역변수 : 함수 외부에서 선언된 변수, 최대한 안쓰는 것이 좋다
+// 자동 전역변수 : 함수 안에서 var없이 선언한 전역변수 , 사용안하는 것을 권장
+// 지역변수 : 함수 안에서 선언된 변수
+// 매개변수는 일종의 지역변수와 같다
+// const, let를 사용해야 한다. var 대신
+
+// 권장하는 코드 습관은 const 로 선언하고 안될 경우 let 활용
+
+
+// recursion 재귀 - 함수가 함수안에서 자신을 다시 호출하는 것
+
+
+// 재귀를 활용한 카운트다운
+var countdown2 = function(n) {
+
+    //termination condition
+    console.log(n);
+    if (n <= 0) {
+        return;
+    }
+
+    countdown2(n - 1);
+};
+
+// a-b까지 정수를 더해서 리턴해주는 함수
+var rsum = function(a, b) {
+    if (a > b) {
+      return NaN;
+    } else if (a ==  b) {
+        return a;
+    }
+    return b + rsum(a, b - 1);
+}
+var x = rsum(1, 10);
+console.log(x);
+
+
+//재귀로 팩토리얼 구현하기
+var factorial = function(n) {
+    if (n < 1) {
+          return NaN;
+    } else if (n===1) {
+          return 1;
+    } else {
+          return n * factorial(n-1);
+    }
+}
+
+// 재귀로 피보나치 수열 구현하기 - 오래걸림
+var fibo = function(n) {
+  if (n===0) {
+      return 0;
+  } else if (n===1) {
+      return 1;
+  } else {
+  return fibo(n-1) + fibo(n-2);
+  }
+};
+
+// 피보나치 다이나믹 프로그래밍 (memoization 기법)
+var arr =[0, 1];
+
+function fibo_d(n) {
+    if(arr[n] == undefined) {
+        arr[n] = fibo_d(n - 1) + fibo_d(n - 2);
+        }
+    return arr[n];
+}
+
+// 수행시간 측정
+// Date.now();
+var t1 = Date.now();
+foo(); //some code to measure time
+var t2 = Date.now();
+
+var time = t2 - t1;
+console.log(time);
+
+// 피보나치 수열 재귀와 다이나믹 프로그래밍의 성능차이확인
+    var fibo = function(n) {
+        if (n <= 0) {
+            return 0;
+        }
+        if (n == 1) {
+            return 1;
+        }
+        return fibo(n - 1) + fibo(n - 2);
+    };
+
+    var arr =[0, 1];
+    var fibo_d = function(n) {
+        if(arr[n] == undefined) {
+            arr[n] = fibo_d(n - 1) + fibo_d(n - 2);
+            }
+        return arr[n];
+    };
+
+    var t1 = Date.now();
+    fibo(42);
+    var t2 = Date.now();
+    console.log("Fibo1 :" + (t2 - t1) + 'ms');
+
+    var t3 = Date.now();
+    fibo_d(42);
+    var t4 = Date.now();
+    console.log("fibo_d :" + (t4-t3) + 'ms');
+
+// Math 객체
+// 속성
+    Math.E
+    Math.PI
+    Math.SQRT2
+// 메소드
+    Math.abs(x);
+    Math.sin(x);
+    Math.floor(x);
+    Math.ceil(x);
+    Math.round(x)
+    Math.max(a, b);
+    Math.min(a, b);
 </script>
