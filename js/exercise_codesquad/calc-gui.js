@@ -8,18 +8,11 @@ output.text = document.getElementById('output');
 var clickNumbers = function(event) {
     var str = event.target.innerHTML;
     console.log(str);
-    if (str ==="BS") {
+    if (str === "BS") {
         input.array.pop();
-    } else if (str === "+") {
-        input.array.push(" + ")
-    } else if (str === "-") {
-        input.array.push(" - ")
-    } else if (str === "*") {
-        input.array.push(" * ")
-    } else if (str === "/") {
-        input.array.push(" / ")
-    }
-    else {
+    } else if (str === "+" || str === "-" || str === "*" || str === "/") {
+        input.array.push(" " + str + " ")
+    } else {
         input.array.push(str);
     }
 
