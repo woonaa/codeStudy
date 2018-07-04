@@ -1,3 +1,49 @@
+const express = require('express');
+const app = express();
+const fs = require('fs');
+const path = require('path');
+const template = require('./template.js');
+
+//route, routing
+// app.get('/', (req, res) => res.send('hello World!'));
+app.get('/', function (request,response) {
+    fs.readdir('./data', function(error, filelist) {
+        const title = "welcome";
+        const description = "hello nodejs";
+        const list = template.list(filelist);
+        const html = template.html(title, list,
+            `<h2>${title}</h2><p>${description}</p>`,
+            `<a href ='/create'>create</a>`
+        );
+        response.send(html);
+    });
+});
+
+app.get('/page/:pageId', function (request,response) {
+    fs.readdir('./data', function(error, filelist) {
+        const filteredId = path.parse(request.params.pageId).base;
+        fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
+            const title = request.params.pageId;
+            const list = template.list(filelist);
+            const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`,
+                `<a href="/create">create</a>
+                 <a href="/update?id=${title}">update</a>
+                   <form action="/delete_process" method="post">
+                      <input type="hidden" name="id" value="${title}">
+                      <input type="submit" value="delete">
+                   </form>>
+          `);
+
+            response.send(html);
+        });
+    });
+});
+
+app.listen(3000, function () {
+    console.log('port 3000!')
+});
+
+/*
 const http = require('http');
 const fs = require('fs');
 const url = require('url');
@@ -14,36 +60,10 @@ const app = http.createServer(function(request, response) {
   if (pathname === '/') {
     if (queryData.id === undefined) {
 
-      //파일리스트 가져오기
-      fs.readdir('./data', function(error, filelist) {
-        const title = "welcome";
-        const description = "hello nodejs"
-        const list = template.list(filelist);
-        const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`, `<a href ='/create'>create</a>`);
-        response.writeHead(200);
-        response.end(html);
-      })
     } else {
       //파일리스트 가져오기
 
-      fs.readdir('./data', function(error, filelist) {
-        const filteredId = path.parse(queryData.id).base;
-        fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
-          const title = queryData.id;
-          const list = template.list(filelist);
-          const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`,
-              `<a href="/create">create</a>
-               <a href="/update?id=${title}">update</a>
-               <form action="/delete_process" method="post">
-                  <input type="hidden" name="id" value="${title}">
-                  <input type="submit" value="delete">
-               </form>>
-          `);
 
-          response.writeHead(200);
-          response.end(html);
-        });
-      });
     }
   } else if (pathname === '/create') {
     fs.readdir('./data', function(error, filelist) {
@@ -156,3 +176,4 @@ const app = http.createServer(function(request, response) {
 });
 
 app.listen(3000);
+*/
