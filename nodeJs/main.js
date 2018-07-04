@@ -2,35 +2,10 @@ const http = require('http');
 const fs = require('fs');
 const url = require('url');
 const qs = require('querystring');
+const template = require('./template.js'); //모듈 사용
+const path = require('path');
 
-function templateHMTL(title, list, body, control) {
-  return `
-      <!doctype html>
-      <html>
-      <head>
-        <title>WEB1 - ${title}</title>
-        <meta charset="utf-8">
-      </head>
-      <body>
-        <h1><a href="/">WEB</a></h1>
-        ${list}
-        ${control}
-        ${body}
-      </body>
-      </html>
-      `;
-}
 
-function templateList(filelist) {
-  let list = '<ul>';
-  let i = 0;
-  while (i < filelist.length) {
-    list = list + `<li> <a href = "/?id=${filelist[i]}">${filelist[i]}</a></li>`;
-    i = i + 1;
-  }
-  list = list + '</ul>';
-  return list;
-}
 const app = http.createServer(function(request, response) {
   const _url = request.url;
   const queryData = url.parse(_url, true).query;
@@ -43,19 +18,20 @@ const app = http.createServer(function(request, response) {
       fs.readdir('./data', function(error, filelist) {
         const title = "welcome";
         const description = "hello nodejs"
-        const list = templateList(filelist);
-        const template = templateHMTL(title, list, `<h2>${title}</h2><p>${description}</p>`, `<a href ='/create'>create</a>`);
+        const list = template.list(filelist);
+        const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`, `<a href ='/create'>create</a>`);
         response.writeHead(200);
-        response.end(template);
+        response.end(html);
       })
     } else {
       //파일리스트 가져오기
 
       fs.readdir('./data', function(error, filelist) {
-        fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+        const filteredId = path.parse(queryData.id).base;
+        fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
           const title = queryData.id;
-          const list = templateList(filelist);
-          const template = templateHMTL(title, list, `<h2>${title}</h2><p>${description}</p>`,
+          const list = template.list(filelist);
+          const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`,
               `<a href="/create">create</a>
                <a href="/update?id=${title}">update</a>
                <form action="/delete_process" method="post">
@@ -65,15 +41,15 @@ const app = http.createServer(function(request, response) {
           `);
 
           response.writeHead(200);
-          response.end(template);
+          response.end(html);
         });
       });
     }
   } else if (pathname === '/create') {
     fs.readdir('./data', function(error, filelist) {
       const title = "Web - create";
-      const list = templateList(filelist);
-      const template = templateHMTL(title, list, `
+      const list = template.list(filelist);
+      const html = template.html(title, list, `
         <form action = "/create_process" method = "post">
           <p>
             <input type = "text" name = "title" placeholder ="title">
@@ -87,7 +63,7 @@ const app = http.createServer(function(request, response) {
         </form>
         `, '');
       response.writeHead(200);
-      response.end(template);
+      response.end(html);
     })
 
   } else if (pathname === '/create_process') {
@@ -111,10 +87,11 @@ const app = http.createServer(function(request, response) {
 
   } else if (pathname === '/update') {
     fs.readdir('./data', function(error, filelist) {
-      fs.readFile(`data/${queryData.id}`, 'utf8', function(err, description) {
+      const filteredId = path.parse(queryData.id).base;
+      fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
         const title = queryData.id;
-        const list = templateList(filelist);
-        const template = templateHMTL(title, list,
+        const list = template.list(filelist);
+        const html = template.html(title, list,
           `
           <form action = "/update_process" method = "post">
             <input type = "hidden" name = "id" value= "${title}">
@@ -132,7 +109,7 @@ const app = http.createServer(function(request, response) {
           `<a href ='/create'>create</a> <a href="/update?id=${title}"">update</a>`);
         // title의 값이 변하면 수정이 되는 것이 아니라 새로운 파일이 생성되기때문에 id값으로 설정
         response.writeHead(200);
-        response.end(template);
+        response.end(html);
       });
     });
   } else if (pathname === '/update_process') {
@@ -164,7 +141,8 @@ const app = http.createServer(function(request, response) {
     request.on('end', function() {
       const post = qs.parse(body);
       const id = post.id;
-      fs.unlink(`./data/${id}`, function(error) {
+      const filteredId = path.parse(id).base;
+      fs.unlink(`./data/${filteredId}`, function(error) {
         response.writeHead(302, {
           Location: `/`
         });
