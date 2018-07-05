@@ -5,30 +5,34 @@ const path = require('path');
 const template = require('./template.js');
 const qs = require('querystring');
 const bodyParser = require('body-parser');
+const compression = require('compression');
 
-app.use(bodyParser.urlencoded({extended: false})) // 폼을 읽어서 분석하는 body-parser
-
+app.use(bodyParser.urlencoded({extended: false})); // 폼을 읽어서 분석하는 body-parser
+app.use(compression()); // 데이터를 압축하는 미들웨어, 필요하다.
+app.use(function (request, response, next) {
+    fs.readdir('./data', function(error, filelist){
+        request.list = filelist;
+        next();
+    });
+});
 //route, routing
 // app.get('/', (req, res) => res.send('hello World!'));
 app.get('/', function (request,response) {
-    fs.readdir('./data', function(error, filelist) {
         const title = "welcome";
         const description = "hello nodejs";
-        const list = template.list(filelist);
+        const list = template.list(request.list);
         const html = template.html(title, list,
             `<h2>${title}</h2><p>${description}</p>`,
             `<a href ='/create'>create</a>`
         );
         response.send(html);
-    });
 });
 
 app.get('/page/:pageId', function (request,response) {
-    fs.readdir('./data', function(error, filelist) {
         const filteredId = path.parse(request.params.pageId).base;
         fs.readFile(`data/${filteredId}`, 'utf8', function(err, description) {
             const title = request.params.pageId;
-            const list = template.list(filelist);
+            const list = template.list(request.list);
             const html = template.html(title, list, `<h2>${title}</h2><p>${description}</p>`,
                 `<a href="/create">create</a>
                  <a href="/update/${title}">update</a>
@@ -37,16 +41,13 @@ app.get('/page/:pageId', function (request,response) {
                       <input type="submit" value="delete">
                    </form>>
           `);
-
             response.send(html);
         });
-    });
 });
 
 app.get('/create', function (request, response) {
-    fs.readdir('./data', function(error, filelist) {
         const title = "Web - create";
-        const list = template.list(filelist);
+        const list = template.list(request.list);
         const html = template.html(title, list, `
         <form action = "/create" method = "post">
           <p>
@@ -61,7 +62,6 @@ app.get('/create', function (request, response) {
         </form>
         `, '');
         response.send(html);
-    })
 });
 
 app.post('/create', function (request,response) {
@@ -94,11 +94,10 @@ app.post('/create', function (request,response) {
 });
 
 app.get('/update/:pageId', function (request, response) {
-    fs.readdir('./data', function (error, filelist) {
         const filteredId = path.parse(request.params.pageId).base;
         fs.readFile(`data/${filteredId}`, 'utf8', function (err, description) {
             const title = request.params.pageId;
-            const list = template.list(filelist);
+            const list = template.list(request.list);
             const html = template.html(title, list,
                 `
           <form action = "/update_process" method = "post">
@@ -117,7 +116,6 @@ app.get('/update/:pageId', function (request, response) {
             // title의 값이 변하면 수정이 되는 것이 아니라 새로운 파일이 생성되기때문에 id값으로 설정
             response.send(html);
         });
-    });
 });
 
 app.post('/update_process', function (request, response) {
