@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const template = require('./template.js');
 const qs = require('querystring');
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({extended: false}));
 
 //route, routing
 // app.get('/', (req, res) => res.send('hello World!'));
@@ -62,6 +65,16 @@ app.get('/create', function (request, response) {
 });
 
 app.post('/create', function (request,response) {
+    //body-parser 사용 방법
+    const post = request.body;
+    const title = post.title;
+    const description = post.description;
+    fs.writeFile(`./data/${title}`, description, 'utf8',
+        function (err) {
+            response.redirect('/?id=${title}');
+        });
+
+    /* 기존방법
     let body = '';
     request.on('data', function (data) {
         body = body + data;
@@ -77,6 +90,7 @@ app.post('/create', function (request,response) {
                 response.redirect('/?id=${title}');
             })
     });
+    */
 });
 
 app.get('/update/:pageId', function (request, response) {
