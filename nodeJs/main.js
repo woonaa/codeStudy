@@ -6,7 +6,7 @@ const template = require('./template.js');
 const qs = require('querystring');
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false})) // 폼을 읽어서 분석하는 body-parser
 
 //route, routing
 // app.get('/', (req, res) => res.send('hello World!'));
@@ -121,6 +121,18 @@ app.get('/update/:pageId', function (request, response) {
 });
 
 app.post('/update_process', function (request, response) {
+    //body-parser 사용
+    const post = request.body;
+    const id = post.id;
+    const title = post.title;
+    const description = post.description;
+    fs.rename(`./data/${id}`, `./data/${title}`, function(error) {
+        fs.writeFile(`./data/${title}`, description, 'utf8',
+            function(err) {
+                response.redirect('/?id=${title}');
+            })
+    })
+    /* 기존 방법
     let body = '';
     request.on('data', function(data) {
         body = body + data;
@@ -137,9 +149,17 @@ app.post('/update_process', function (request, response) {
                 })
         })
     });
+    */
 });
 
 app.post('/delete_process', function (request, response) {
+    const post = request.body;
+    const id = post.id;
+    const filteredId = path.parse(id).base;
+    fs.unlink(`./data/${filteredId}`, function(error) {
+        response.redirect('/');
+    })
+    /*
     let body = '';
     request.on('data', function(data) {
         body = body + data;
@@ -152,6 +172,7 @@ app.post('/delete_process', function (request, response) {
             response.redirect('/');
         })
     });
+    */
 });
 
 app.listen(3000, function () {
